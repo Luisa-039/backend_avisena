@@ -8,6 +8,7 @@ from core.database import get_db
 from fastapi.security import OAuth2PasswordRequestForm
 from app.schemas.auth import ForgotPasswordRequest, ResetPasswordRequest
 from app.crud import users as crud_users
+from core.email import send_password_reset_email
 import logging
 
 logger = logging.getLogger(__name__)
@@ -40,7 +41,7 @@ async def forgot_password(
 ):
     """
     Solicita recuperación de contraseña.
-    Genera un token y lo envía por email (o lo muestra en consola para desarrollo).
+    Genera un código de 6 dígitos y lo envía por email.
     """
     try:
         # Verificar si el usuario existe
@@ -48,22 +49,19 @@ async def forgot_password(
         
         # Por seguridad, siempre retornamos el mismo mensaje
         if user:
+            # Generar y guardar código
             reset_token = crud_users.save_reset_token(db, request.email)
-
+            
             if reset_token:
-                print(f"\n{'='*60}")
-                print("🔐 CÓDIGO DE RECUPERACIÓN DE CONTRASEÑA")
-                print(f"{'='*60}")
-                print(f"📧 Email: {request.email}")
-                print(f"🔑 Código: {reset_token}")
-                print(f"⏰ Válido por: 1 hora")
-                print(f"⚠️  Este código de 6 dígitos es de un solo uso")
-                print(f"{'='*60}\n")
-
-            return {"message": "Se envió el código de recuperación al correo ingresado"}  # ← AHORA SÍ
-
+                # Enviar email con el código
+                email_sent = send_password_reset_email(request.email, reset_token)
+                
+                if email_sent:
+                    logger.info(f"Código de recuperación enviado a: {request.email}")
+                else:
+                    logger.warning(f"No se pudo enviar email a: {request.email}")
         return {
-            "message": "Si el correo existe, recibirás instrucciones para recuperar tu contraseña"
+            "message": "Si el correo existe, recibirás un código de 6 dígitos para recuperar tu contraseña"
         }
     except Exception as e:
         logger.error(f"Error en forgot_password: {e}")
@@ -86,10 +84,10 @@ async def reset_password(
             )
         
         # Validar longitud mínima de contraseña
-        if len(request.new_password) < 8:
+        if len(request.new_password) < 9:
             raise HTTPException(
                 status_code=400,
-                detail="La contraseña debe tener al menos 8 caracteres"
+                detail="La contraseña debe tener al menos 9 caracteres"
             )
         
         # Actualizar contraseña con el token

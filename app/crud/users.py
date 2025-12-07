@@ -8,6 +8,7 @@ from app.schemas.users import UserCreate, UserUpdate
 from fastapi import HTTPException
 from datetime import datetime, timedelta
 import random
+import secrets
 
 logger = logging.getLogger(__name__)
 
@@ -214,8 +215,6 @@ def change_user_status(db: Session, id_usuario: int, nuevo_estado: bool) -> bool
         db.rollback()
         logger.error(f"Error al cambiar el estado del usuario {id_usuario}: {e}")
         raise Exception("Error de base de datos al cambiar el estado del usuario")
-
-
 
 def get_all_user_except_superadmins(db: Session):
     try:

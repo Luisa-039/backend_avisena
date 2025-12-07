@@ -125,7 +125,7 @@ def send_password_reset_email(email: str, token: str) -> bool:
                     </div>
                     
                     <div class="warning">
-                        <strong>⏰ Importante:</strong> Este código expira en 1 hora y solo se puede usar una vez.
+                        <strong>Importante:</strong> Este código expira en 1 hora y solo se puede usar una vez.
                     </div>
                 </div>
                 
