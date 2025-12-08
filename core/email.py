@@ -50,11 +50,6 @@ def send_password_reset_email(email: str, token: str) -> bool:
                     border-bottom: 3px solid #2c5f2d;
                     padding-bottom: 20px;
                 }}
-                .logo {{
-                    font-size: 36px;
-                    font-weight: bold;
-                    margin-bottom: 10px;
-                }}
                 .code-box {{
                     background: linear-gradient(135deg, #2c5f2d 0%, #234d24 100%);
                     color: white;
@@ -101,7 +96,6 @@ def send_password_reset_email(email: str, token: str) -> bool:
         <body>
             <div class="container">
                 <div class="header">
-                    <div class="logo">🐓 AVISENA</div>
                     <h2 style="margin: 0; color: #2c5f2d;">Recuperación de Contraseña</h2>
                 </div>
                 
@@ -116,7 +110,7 @@ def send_password_reset_email(email: str, token: str) -> bool:
                     </div>
                     
                     <div class="info-box">
-                        <strong>📱 Cómo usar tu código:</strong>
+                        <strong>Cómo usar tu código:</strong>
                         <ol style="margin: 10px 0; padding-left: 20px;">
                             <li>Ve a la página de recuperación de contraseña</li>
                             <li>Ingresa el código de 6 dígitos</li>
@@ -144,15 +138,23 @@ def send_password_reset_email(email: str, token: str) -> bool:
         part = MIMEText(html, "html")
         message.attach(part)
         
-        # Enviar email
-        with smtplib.SMTP(settings.SMTP_HOST, settings.SMTP_PORT) as server:
+        # Enviar email con timeout adecuado
+        with smtplib.SMTP(settings.SMTP_HOST, settings.SMTP_PORT, timeout=30) as server:
             server.starttls()
             server.login(settings.SMTP_USER, settings.SMTP_PASSWORD)
             server.sendmail(settings.EMAILS_FROM_EMAIL, email, message.as_string())
         
-        logger.info(f"Email de recuperación enviado a: {email}")
+        logger.info(f"Código de recuperación enviado exitosamente a: {email}")
         return True
         
+    except smtplib.SMTPAuthenticationError as e:
+        logger.error(f"Error de autenticación SMTP: {e}")
+        return False
+        
+    except smtplib.SMTPException as e:
+        logger.error(f"Error SMTP al enviar a {email}: {e}")
+        return False
+        
     except Exception as e:
-        logger.error(f"Error enviando email a {email}: {e}")
+        logger.error(f"Error general enviando email a {email}: {e}")
         return False
