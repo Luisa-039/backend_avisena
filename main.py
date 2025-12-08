@@ -2,7 +2,11 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.router import tareas
 from app.router import users, auth, ventas,modulos, permisos, roles, detalle_huevos, metodo_pago, detalle_salvamento, produccion_huevos, stock, tipo_huevos, rescue, chickens, isolation, type_chickens, chicken_incident, sheds, lands, incidentes_generales, registro_sensores, categories, inventory, sensor_types, sensors, dashboard, alimento, consumo_gallinas
-app = FastAPI()
+app = FastAPI(
+    title="AVISENA API",
+    description="API para gestión de granjas avícolas",
+    version="1.0.0"
+)
  
 # Incluir en el objeto app los routers
 app.include_router(users.router, prefix="/users", tags=["users"])
@@ -41,7 +45,15 @@ app.include_router(consumo_gallinas.router, prefix="/consumo_gallinas", tags=["c
 # Configuración de CORS para permitir todas las solicitudes desde cualquier origen
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Permitir solicitudes desde cualquier origen
+    allow_origins=[
+        "http://localhost:5500",
+        "http://127.0.0.1:5500",
+        "http://localhost:3000",
+        "http://localhost:8000",
+        "https://backend-avisena.onrender.com",
+        "https://avisena-frontend.onrender.com"
+        "*"
+    ],
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE"],  # Permitir estos métodos HTTP
     allow_headers=["*"],  # Permitir cualquier encabezado en las solicitudes
