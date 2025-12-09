@@ -30,7 +30,7 @@ class Settings(BaseSettings):
     SMTP_USER: str = os.getenv("SMTP_USER", "")
     SMTP_PASSWORD: str = os.getenv("SMTP_PASSWORD", "")
     EMAILS_FROM_EMAIL: str = os.getenv("EMAILS_FROM_EMAIL", "noreply@avisena.com")
-    FRONTEND_URL: str = os.getenv("FRONTEND_URL", "https://avisena-frontend.onrender.com")
+    FRONTEND_URL: str = os.getenv("FRONTEND_URL", "https://avisena-frontend.vercel.app")
 
     class Config:
         env_file = ".env"
