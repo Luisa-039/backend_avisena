@@ -7,7 +7,7 @@ app = FastAPI()
 # Configuración de CORS para permitir todas las solicitudes desde cualquier origen
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://avisena-frontend.vercel.app"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE"],  # Permitir estos métodos HTTP
     allow_headers=["*"],  # Permitir cualquier encabezado en las solicitudes
