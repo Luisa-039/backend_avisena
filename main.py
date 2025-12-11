@@ -4,10 +4,14 @@ from app.router import tareas
 from app.router import users, auth, ventas,modulos, permisos, roles, detalle_huevos, metodo_pago, detalle_salvamento, produccion_huevos, stock, tipo_huevos, rescue, chickens, isolation, type_chickens, chicken_incident, sheds, lands, incidentes_generales, registro_sensores, categories, inventory, sensor_types, sensors, dashboard, alimento, consumo_gallinas
 app = FastAPI()
 
-# Configuración de CORS para permitir todas las solicitudes desde cualquier origen
+origins = [
+    "https://avisena-frontend.vercel.app",
+    "https://backend-avisena.vercel.app",
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE"],  # Permitir estos métodos HTTP
     allow_headers=["*"],  # Permitir cualquier encabezado en las solicitudes
