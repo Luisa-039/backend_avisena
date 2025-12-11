@@ -4,16 +4,11 @@ from app.router import tareas
 from app.router import users, auth, ventas,modulos, permisos, roles, detalle_huevos, metodo_pago, detalle_salvamento, produccion_huevos, stock, tipo_huevos, rescue, chickens, isolation, type_chickens, chicken_incident, sheds, lands, incidentes_generales, registro_sensores, categories, inventory, sensor_types, sensors, dashboard, alimento, consumo_gallinas
 app = FastAPI()
 
-origins = [
-    "https://avisena-frontend.vercel.app",
-    "https://backend-avisena.vercel.app",
-]
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE"],  # Permitir estos métodos HTTP
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],  # Permitir cualquier encabezado en las solicitudes
 )
  
